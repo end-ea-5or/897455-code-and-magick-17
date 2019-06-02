@@ -277,7 +277,7 @@ window.Game = (function () {
           x: window.GameConstants.Wizard.getX(WIDTH),
           y: window.GameConstants.Wizard.getY(HEIGHT)
         }
-      );
+    );
 
     return state;
   };
