@@ -28,6 +28,11 @@ var getMaxElement = function (arr) {
   return maxElement;
 };
 
+// возвращает цвет в формате hsl с рандомной насыщенностью
+var getColorHslRandomSat = function (hue, lightness) {
+  return 'hsl(' + hue + ', ' + Math.round(Math.random() * 100) + '%' + ', ' + lightness + '%)';
+};
+
 // вывод статистики
 window.renderStatistics = function (ctx, names, times) {
   renderCloud(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, 'rgba(0, 0, 0, 0.7)');
@@ -44,7 +49,7 @@ window.renderStatistics = function (ctx, names, times) {
   for (var i = 0; i < names.length; i++) {
     var colorBar = 'rgba(255, 0, 0, 1)';
     if (names[i] !== 'Вы') {
-      colorBar = 'rgba(0, 0, 255, ' + (Math.random() * 0.9 + 0.1).toFixed(1) + ')';
+      colorBar = getColorHslRandomSat(240, 50);
     }
     var barHeight = (times[i] * (GIST_HEIGHT - LINE_GAP)) / maxTime;
     ctx.fillStyle = colorBar;
