@@ -23,11 +23,11 @@ for (var i = 0; i < 4; i++) {
     name: NAMES[getRandomInt(NAMES.length)] + ' ' + SURNAMES[getRandomInt(SURNAMES.length)],
     coatColor: COAT_COLORS[getRandomInt(COAT_COLORS.length)],
     eyesColor: EYES_COLORS[getRandomInt(EYES_COLORS.length)]
-  }
+  };
 }
 
 // создание персонажа на основе шаблона с использованием данных массива wizards
-var renderWizard = function(wizard) {
+var renderWizard = function (wizard) {
   var wizardElement = similarWizardTemplate.cloneNode(true);
   wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
   wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
@@ -37,8 +37,8 @@ var renderWizard = function(wizard) {
 
 var fragment = document.createDocumentFragment();
 
-for (var i = 0; i < wizards.length; i++) {
-  fragment.appendChild(renderWizard(wizards[i]));
+for (var k = 0; k < wizards.length; k++) {
+  fragment.appendChild(renderWizard(wizards[k]));
 }
 
 simularListElement.appendChild(fragment);
