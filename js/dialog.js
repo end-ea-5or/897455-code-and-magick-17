@@ -33,6 +33,14 @@
       // перемещаем элемент
       setup.style.top = (setup.offsetTop - shift.y) + 'px';
       setup.style.left = (setup.offsetLeft - shift.x) + 'px';
+
+      // условие, что он не выходит за ширину экрана
+      // shiftHandlerSetup - разница между положением аватара и левого края окна
+      var shiftHandlerSetup = dialogHandler.getBoundingClientRect().left - setup.getBoundingClientRect().left;
+      if (dialogHandler.getBoundingClientRect().left > (screen.width - setup.clientWidth) || dialogHandler.getBoundingClientRect().left < shiftHandlerSetup) {
+        setup.style.top = (setup.offsetTop + shift.y) + 'px';
+        setup.style.left = (setup.offsetLeft + shift.x) + 'px';
+      }
     };
 
     // при опускании кнопки мыши перестаем "слушать" события mousemove и mouseup
