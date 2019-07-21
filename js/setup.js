@@ -1,14 +1,11 @@
 'use strict';
 
 (function () {
-  var NAMES = ['Иван', 'Хуан Себастьян', 'Мария', 'Кристоф', 'Виктор', 'Юлия', 'Люпита', 'Вашингтон'];
-  var SURNAMES = ['да Марья', 'Верон', 'Мирабелла', 'Вальц', 'Онопко', 'Топольницкая', 'Нионго', 'Ирвинг'];
   var COAT_COLORS = ['rgb(101, 137, 164)', 'rgb(241, 43, 107)', 'rgb(146, 100, 161)', 'rgb(56, 159, 117)', 'rgb(215, 210, 55)', 'rgb(0, 0, 0)'];
   var EYES_COLORS = ['black', 'red', 'blue', 'yellow', 'green'];
   var FIREBALLS_COLORS = ['#ee4830', '#30a8ee', '#5ce6c0', '#e848d5', '#e6e848'];
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
-  var wizards = [];
   var setup = document.querySelector('.setup');
   var setupOpen = document.querySelector('.setup-open');
   var setupClose = setup.querySelector('.setup-close');
@@ -17,9 +14,10 @@
   var wizardFireball = setup.querySelector('.setup-fireball-wrap');
   var inputFocusVariable = false;
   document.querySelector('.setup-similar').classList.remove('hidden');
+  var form = setup.querySelector('.setup-wizard-form');
 
   var simularListElement = setup.querySelector('.setup-similar-list');
-  var similarWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+  var simularWizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
   // открытие окна
   var openPopup = function () {
@@ -56,31 +54,14 @@
     }
   };
 
-  // cоздание элемента на основе JS объекта
-  for (var i = 0; i < 4; i++) {
-    wizards[i] = {
-      name: NAMES[window.util.getRandomInt(NAMES.length)] + ' ' + SURNAMES[window.util.getRandomInt(SURNAMES.length)],
-      coatColor: COAT_COLORS[window.util.getRandomInt(COAT_COLORS.length)],
-      eyesColor: EYES_COLORS[window.util.getRandomInt(EYES_COLORS.length)]
-    };
-  }
-
   // создание персонажа на основе шаблона с использованием данных массива wizards
   var renderWizard = function (wizard) {
-    var wizardElement = similarWizardTemplate.cloneNode(true);
+    var wizardElement = simularWizardTemplate.cloneNode(true);
     wizardElement.querySelector('.setup-similar-label').textContent = wizard.name;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizard.coatColor;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.eyesColor;
+    wizardElement.querySelector('.wizard-coat').style.fill = wizard.colorCoat;
+    wizardElement.querySelector('.wizard-eyes').style.fill = wizard.colorEyes;
     return wizardElement;
   };
-
-  var fragment = document.createDocumentFragment();
-
-  for (var k = 0; k < wizards.length; k++) {
-    fragment.appendChild(renderWizard(wizards[k]));
-  }
-
-  simularListElement.appendChild(fragment);
 
   setupOpen.addEventListener('click', openPopup);
   setupClose.addEventListener('click', closePopup);
@@ -109,4 +90,35 @@
     wizardFireball.style.backgroundColor = colorFireball;
     wizardFireball.querySelector('[name="fireball-color"]').value = colorFireball;
   });
+
+  // обработчик успешной загрузки
+  var successHandler = function (wizards) {
+    var fragment = document.createDocumentFragment();
+    for (var k = 0; k < 4; k++) {
+      fragment.appendChild(renderWizard(wizards[k]));
+    }
+    simularListElement.appendChild(fragment);
+  };
+
+  // обработчик ошибки
+  var errorHandler = function (errMessage) {
+    var node = document.createElement('div');
+    node.style = 'position: absolute; z-index: 110; color: white; font-size: 30px; text-align: center;';
+    node.style.backgroundColor = 'red';
+    node.style.width = '100%';
+    node.style.boxShadow = '-1px -1px 14px -3px black';
+    node.textContent = errMessage;
+    form.insertBefore(node, form.querySelector('.setup-footer'));
+  };
+
+  // отправка формы на сервер
+  form.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.save(new FormData(form), function () {
+      setup.classList.add('hidden');
+    }, errorHandler);
+  });
+
+  // получение данных с сервера
+  window.backend.load(successHandler, errorHandler);
 })();
